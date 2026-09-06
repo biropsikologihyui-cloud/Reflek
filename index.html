@@ -105,7 +105,7 @@
                     <!-- Integrasi Google Spreadsheet (Opsional) -->
                     <div class="pt-2 border-t border-slate-100">
                         <label class="block text-[10px] font-semibold text-slate-400 mb-1">🔗 URL Google Apps Script Web App (Opsional untuk sinkronisasi)</label>
-                        <input type="text" id="sheetUrlInput" placeholder="https://script.google.com/macros/s/AKfycbwrslZkzyHylzc1HcgZ2wi2xbl4GmpLZxAAfkW1D4hO1E5CwqWwJFdwvRIbwdvyF-C_/exec" class="w-full text-[11px] bg-slate-50 border border-slate-200 rounded-lg p-2 outline-none focus:border-fuchsia-500">
+                        <input type="text" id="sheetUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full text-[11px] bg-slate-50 border border-slate-200 rounded-lg p-2 outline-none focus:border-fuchsia-500">
                     </div>
 
                     <button onclick="saveJournal()" class="w-full py-2.5 bg-fuchsia-600 hover:bg-fuchsia-700 text-white font-semibold rounded-xl text-xs transition cursor-pointer shadow-md shadow-fuchsia-100">
@@ -151,7 +151,7 @@
         let savedSheetUrl = localStorage.getItem('journal_sheet_url') || '';
 
         // Load data jurnal lokal perangkat
-        let journals = JSON.parse(localStorage.getItem('journal_data_' + currentActiveUser)) || [];
+        let journals = currentActiveUser ? JSON.parse(localStorage.getItem('journal_data_' + currentActiveUser)) || [] : [];
 
         // Inisialisasi awal tampilan
         document.getElementById('sheetUrlInput').value = savedSheetUrl;
@@ -198,7 +198,6 @@
             const existingPin = localStorage.getItem(storedPinKey);
 
             if (isSetupMode) {
-                // Mode Pendaftaran Akun Baru
                 if (existingPin) {
                     showMessage('Perhatian', 'Username tersebut sudah terdaftar. Silakan gunakan nama lain atau masuk dengan password Anda.');
                     return;
@@ -211,7 +210,6 @@
                 showMessage('Berhasil', 'Akun jurnal berhasil dibuat! Selamat menulis.');
                 checkAuthStatus();
             } else {
-                // Mode Login Verifikasi
                 if (!existingPin) {
                     showMessage('Akun Tidak Ditemukan', 'Username belum terdaftar. Silakan klik "Belum punya akun" di bawah untuk mendaftar.');
                     return;
@@ -234,7 +232,7 @@
             document.getElementById('usernameInput').value = '';
             document.getElementById('pinInput').value = '';
             isSetupMode = false;
-            toggleSetupMode(); // reset teks UI auth
+            toggleSetupMode();
             toggleSetupMode();
             checkAuthStatus();
         }
@@ -296,7 +294,6 @@
                 return;
             }
 
-            // Simpan URL Spreadsheet jika diisi
             if (sheetUrl) {
                 localStorage.setItem('journal_sheet_url', sheetUrl);
             }
@@ -316,7 +313,6 @@
             journals.unshift(newEntry);
             localStorage.setItem('journal_data_' + currentActiveUser, JSON.stringify(journals));
 
-            // Kirim ke Google Spreadsheet jika URL disetel
             if (sheetUrl) {
                 fetch(sheetUrl, {
                     method: 'POST',
