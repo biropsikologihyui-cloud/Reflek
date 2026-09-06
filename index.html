@@ -19,38 +19,36 @@
 </head>
 <body class="flex flex-col items-center justify-between min-h-screen p-4 sm:p-6 text-slate-700">
 
-    <!-- SCREEN 1: KUNCI / LOGIN & PENGATURAN KREDENSIAL -->
     <div id="authScreen" class="w-full max-w-md my-auto flex flex-col items-center justify-center p-2">
         <div class="bg-white rounded-3xl p-6 sm:p-8 card-shadow border border-slate-100 w-full text-center space-y-4">
             <div class="w-16 h-16 bg-fuchsia-100 text-fuchsia-600 rounded-2xl flex items-center justify-center mx-auto text-2xl">
                 🔐
             </div>
             <div>
-                <h1 id="authTitle" class="text-xl font-bold text-slate-800">Ruang Privasi Jurnal</h1>
-                <p id="authSubtitle" class="text-xs text-slate-400 mt-1">Masukkan kredensial Anda untuk membuka catatan harian.</p>
+                <h1 class="text-xl font-bold text-slate-800">Ruang Privasi Jurnal</h1>
+                <p class="text-xs text-slate-400 mt-1">Masukkan URL Google Sheet, username & password Anda.</p>
             </div>
             
             <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-3 pt-2">
                 <div>
-                    <input type="text" id="usernameInput" placeholder="Username / Nama Panggilan" required class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-fuchsia-500 text-center font-medium">
+                    <input type="text" id="sheetUrlInput" placeholder="https://script.google.com/macros/s/AKfycbwrslZkzyHylzc1HcgZ2wi2xbl4GmpLZxAAfkW1D4hO1E5CwqWwJFdwvRIbwdvyF-C_/exec" required class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-fuchsia-500 font-medium">
                 </div>
                 <div>
-                    <input type="password" id="pinInput" placeholder="Password / 4 Digit PIN" required maxlength="6" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-fuchsia-500 text-center tracking-widest font-medium">
+                    <input type="text" id="usernameInput" placeholder="Username" required class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-fuchsia-500 text-center font-medium">
+                </div>
+                <div>
+                    <input type="password" id="pinInput" placeholder="Password" required class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-fuchsia-500 text-center tracking-widest font-medium">
                 </div>
                 <button type="submit" id="authSubmitBtn" class="w-full py-3 bg-fuchsia-600 hover:bg-fuchsia-700 text-white font-semibold rounded-xl text-xs transition cursor-pointer shadow-md shadow-fuchsia-100">
                     Buka Buku Jurnal ✨
                 </button>
             </form>
-
-            <div class="pt-2 border-t border-slate-100">
-                <button type="button" onclick="toggleSetupMode()" id="toggleSetupBtn" class="text-[11px] text-fuchsia-600 hover:underline font-semibold cursor-pointer">
-                    Belum punya akun? Atur Username & Password baru
-                </button>
+            <div class="pt-2 border-t border-slate-100 text-[11px] text-slate-400">
+                Pendaftaran akun baru dilakukan oleh Admin langsung di tab <b>Users</b> Google Sheet.
             </div>
         </div>
     </div>
 
-    <!-- SCREEN 2: DASHBOARD UTAMA JURNAL -->
     <div id="mainDashboard" class="hidden w-full max-w-md flex flex-col items-center justify-between min-h-screen py-2">
         <header class="w-full text-center pt-2">
             <div class="flex justify-between items-center px-2 mb-2">
@@ -63,7 +61,6 @@
 
         <main class="w-full my-auto py-4 flex flex-col gap-4">
             
-            <!-- Tab Navigation -->
             <div class="flex bg-white p-1 rounded-2xl card-shadow border border-slate-100">
                 <button onclick="switchTab('write')" id="tabWrite" class="flex-1 py-2.5 text-xs font-bold rounded-xl transition bg-fuchsia-600 text-white shadow-sm cursor-pointer">
                     1. Tulis Jurnal Baru
@@ -73,15 +70,13 @@
                 </button>
             </div>
 
-            <!-- View 1: Tulis Jurnal (Form) -->
             <div id="viewWrite" class="space-y-3">
                 <div class="bg-white rounded-2xl p-4 card-shadow border border-slate-100 space-y-3.5">
                     
-                    <!-- Pemilihan Suasana Hati (Mood) -->
                     <div>
                         <label class="block text-[11px] font-semibold text-slate-500 mb-1.5">Bagaimana suasana hatimu hari ini?</label>
                         <div id="moodSelector" class="grid grid-cols-5 gap-1.5">
-                            <button type="button" onclick="selectMood('😊', 'Senang')" class="mood-btn p-2 rounded-xl border border-slate-200 text-lg hover:bg-fuchsia-50 transition cursor-pointer text-center bg-fuchsia-50 border-fuchsia-300">😊</button>
+                            <button type="button" onclick="selectMood('😊', 'Senang')" class="mood-btn p-2 rounded-xl border border-fuchsia-300 text-lg hover:bg-fuchsia-50 transition cursor-pointer text-center bg-fuchsia-50">😊</button>
                             <button type="button" onclick="selectMood('😌', 'Tenang')" class="mood-btn p-2 rounded-xl border border-slate-200 text-lg hover:bg-fuchsia-50 transition cursor-pointer text-center">😌</button>
                             <button type="button" onclick="selectMood('😐', 'Biasa')" class="mood-btn p-2 rounded-xl border border-slate-200 text-lg hover:bg-fuchsia-50 transition cursor-pointer text-center">😐</button>
                             <button type="button" onclick="selectMood('🌧️', 'Lelah')" class="mood-btn p-2 rounded-xl border border-slate-200 text-lg hover:bg-fuchsia-50 transition cursor-pointer text-center">🌧️</button>
@@ -90,22 +85,14 @@
                         <div class="text-center mt-1 text-xs font-bold text-fuchsia-600" id="selectedMoodLabel">Senang</div>
                     </div>
 
-                    <!-- Pertanyaan Pemandu 1: Hal yang disyukuri -->
                     <div>
                         <label class="block text-[11px] font-semibold text-slate-500 mb-1">🌟 Hal apa yang paling kamu syukuri hari ini?</label>
                         <input type="text" id="inputGratitude" placeholder="Contoh: Bisa menikmati kopi hangat pagi ini" class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-fuchsia-500">
                     </div>
 
-                    <!-- Pertanyaan Pemandu 2: Isi Jurnal Bebas -->
                     <div>
                         <label class="block text-[11px] font-semibold text-slate-500 mb-1">✍️ Ceritakan isi pikiran atau perasaanmu saat ini</label>
                         <textarea id="inputStory" rows="4" placeholder="Tulis apa saja tanpa takut dihakimi..." class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-fuchsia-500 resize-none"></textarea>
-                    </div>
-
-                    <!-- Integrasi Google Spreadsheet (Opsional) -->
-                    <div class="pt-2 border-t border-slate-100">
-                        <label class="block text-[10px] font-semibold text-slate-400 mb-1">🔗 URL Google Apps Script Web App (Opsional untuk sinkronisasi)</label>
-                        <input type="text" id="sheetUrlInput" placeholder="https://script.google.com/macros/s/AKfycbwrslZkzyHylzc1HcgZ2wi2xbl4GmpLZxAAfkW1D4hO1E5CwqWwJFdwvRIbwdvyF-C_/exec"w-full text-[11px] bg-slate-50 border border-slate-200 rounded-lg p-2 outline-none focus:border-fuchsia-500">
                     </div>
 
                     <button onclick="saveJournal()" class="w-full py-2.5 bg-fuchsia-600 hover:bg-fuchsia-700 text-white font-semibold rounded-xl text-xs transition cursor-pointer shadow-md shadow-fuchsia-100">
@@ -114,24 +101,21 @@
                 </div>
             </div>
 
-            <!-- View 2: Riwayat Jurnal -->
             <div id="viewHistory" class="hidden space-y-3">
                 <div class="bg-white rounded-2xl p-4 card-shadow border border-slate-100 max-h-80 overflow-y-auto space-y-2.5">
                     <h3 class="text-xs font-bold text-slate-800 mb-1">Arsip Catatan Refleksi</h3>
                     <div id="journalList" class="space-y-2.5">
-                        <!-- Dinamis via JS -->
-                    </div>
+                        </div>
                 </div>
             </div>
 
         </main>
 
         <footer class="w-full pt-2 text-center">
-            <p class="text-[11px] text-slate-400">Jurnal Refleksi Pribadi • Terlindungi Kredensial Lokal.</p>
+            <p class="text-[11px] text-slate-400">Jurnal Refleksi Pribadi • Terhubung ke Google Sheet.</p>
         </footer>
     </div>
 
-    <!-- Custom Modal Pengganti Alert -->
     <div id="customModal" class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-2xl p-5 max-w-xs w-full card-shadow text-center space-y-3">
             <h3 id="modalTitle" class="text-sm font-bold text-slate-800">Pemberitahuan</h3>
@@ -145,15 +129,11 @@
     <script>
         let currentMoodEmoji = '😊';
         let currentMoodName = 'Senang';
-        let isSetupMode = false; // Mode registrasi kredensial baru vs login
 
         let currentActiveUser = localStorage.getItem('journal_active_user') || null;
         let savedSheetUrl = localStorage.getItem('journal_sheet_url') || '';
+        let journals = JSON.parse(localStorage.getItem('journal_data_' + currentActiveUser)) || [];
 
-        // Load data jurnal lokal perangkat
-        let journals = currentActiveUser ? JSON.parse(localStorage.getItem('journal_data_' + currentActiveUser)) || [] : [];
-
-        // Inisialisasi awal tampilan
         document.getElementById('sheetUrlInput').value = savedSheetUrl;
         checkAuthStatus();
 
@@ -167,62 +147,40 @@
             document.getElementById('customModal').classList.add('hidden');
         }
 
-        function toggleSetupMode() {
-            isSetupMode = !isSetupMode;
-            const titleEl = document.getElementById('authTitle');
-            const subEl = document.getElementById('authSubtitle');
-            const btnEl = document.getElementById('authSubmitBtn');
-            const toggleBtn = document.getElementById('toggleSetupBtn');
-
-            if (isSetupMode) {
-                titleEl.textContent = "Buat Akun Jurnal Baru";
-                subEl.textContent = "Daftarkan username dan password rahasia Anda.";
-                btnEl.textContent = "Daftar & Masuk 🚀";
-                toggleBtn.textContent = "Sudah punya akun? Masuk di sini";
-            } else {
-                titleEl.textContent = "Ruang Privasi Jurnal";
-                subEl.textContent = "Masukkan kredensial Anda untuk membuka catatan harian.";
-                btnEl.textContent = "Buka Buku Jurnal ✨";
-                toggleBtn.textContent = "Belum punya akun? Atur Username & Password baru";
-            }
-        }
-
-        function handleAuthSubmit(e) {
+        async function handleAuthSubmit(e) {
             e.preventDefault();
+            const sheetUrl = document.getElementById('sheetUrlInput').value.trim();
             const username = document.getElementById('usernameInput').value.trim();
-            const pin = document.getElementById('pinInput').value.trim();
+            const password = document.getElementById('pinInput').value.trim();
 
-            if (!username || !pin) return;
+            if (!sheetUrl || !username || !password) return;
 
-            const storedPinKey = 'journal_pin_' + username;
-            const existingPin = localStorage.getItem(storedPinKey);
+            const submitBtn = document.getElementById('authSubmitBtn');
+            submitBtn.textContent = "Memverifikasi...";
+            submitBtn.disabled = true;
 
-            if (isSetupMode) {
-                if (existingPin) {
-                    showMessage('Perhatian', 'Username tersebut sudah terdaftar. Silakan gunakan nama lain atau masuk dengan password Anda.');
-                    return;
-                }
-                localStorage.setItem(storedPinKey, pin);
-                localStorage.setItem('journal_active_user', username);
-                currentActiveUser = username;
-                journals = JSON.parse(localStorage.getItem('journal_data_' + username)) || [];
+            try {
+                // Pengecekan login via GET ke Google Apps Script yang sudah teruji berhasil
+                const targetUrl = `${sheetUrl}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
                 
-                showMessage('Berhasil', 'Akun jurnal berhasil dibuat! Selamat menulis.');
-                checkAuthStatus();
-            } else {
-                if (!existingPin) {
-                    showMessage('Akun Tidak Ditemukan', 'Username belum terdaftar. Silakan klik "Belum punya akun" di bawah untuk mendaftar.');
-                    return;
-                }
-                if (existingPin !== pin) {
-                    showMessage('Gagal Masuk', 'Password / PIN yang Anda masukkan salah. Silakan coba lagi.');
-                    return;
-                }
+                const response = await fetch(targetUrl);
+                const result = await response.json();
 
-                localStorage.setItem('journal_active_user', username);
-                currentActiveUser = username;
-                journals = JSON.parse(localStorage.getItem('journal_data_' + username)) || [];
-                checkAuthStatus();
+                if (result.status === 'success') {
+                    localStorage.setItem('journal_sheet_url', sheetUrl);
+                    localStorage.setItem('journal_active_user', username);
+                    currentActiveUser = username;
+                    journals = JSON.parse(localStorage.getItem('journal_data_' + username)) || [];
+                    checkAuthStatus();
+                } else {
+                    showMessage('Akun Tidak Ditemukan', 'Username atau Password salah, atau belum didaftarkan Admin di tab "Users" Google Sheet.');
+                }
+            } catch (err) {
+                console.error(err);
+                showMessage('Gagal Terhubung', 'Pastikan URL Web App Google Apps Script benar dan akses deploy diatur ke "Anyone".');
+            } finally {
+                submitBtn.textContent = "Buka Buku Jurnal ✨";
+                submitBtn.disabled = false;
             }
         }
 
@@ -231,9 +189,6 @@
             currentActiveUser = null;
             document.getElementById('usernameInput').value = '';
             document.getElementById('pinInput').value = '';
-            isSetupMode = false;
-            toggleSetupMode();
-            toggleSetupMode();
             checkAuthStatus();
         }
 
@@ -284,18 +239,14 @@
             });
         }
 
-        function saveJournal() {
+        async function saveJournal() {
             const gratitude = document.getElementById('inputGratitude').value.trim();
             const story = document.getElementById('inputStory').value.trim();
-            const sheetUrl = document.getElementById('sheetUrlInput').value.trim();
+            const sheetUrl = localStorage.getItem('journal_sheet_url');
 
             if (!story && !gratitude) {
                 showMessage('Perhatian', 'Mohon isi setidaknya bagian cerita atau hal yang disyukuri.');
                 return;
-            }
-
-            if (sheetUrl) {
-                localStorage.setItem('journal_sheet_url', sheetUrl);
             }
 
             const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
@@ -311,56 +262,4 @@
             };
 
             journals.unshift(newEntry);
-            localStorage.setItem('journal_data_' + currentActiveUser, JSON.stringify(journals));
-
-            if (sheetUrl) {
-                fetch(sheetUrl, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        username: currentActiveUser,
-                        mood: `${currentMoodEmoji} ${currentMoodName}`,
-                        gratitude: newEntry.gratitude,
-                        story: newEntry.story
-                    })
-                }).catch(err => console.log('Sync spreadsheet background note:', err));
-            }
-
-            document.getElementById('inputGratitude').value = '';
-            document.getElementById('inputStory').value = '';
-            updateCountBadge();
-            switchTab('history');
-            showMessage('Berhasil', 'Catatan jurnal hari ini berhasil disimpan dengan aman! ✨');
-        }
-
-        function updateCountBadge() {
-            document.getElementById('countBadge').textContent = journals.length;
-        }
-
-        function renderHistory() {
-            const list = document.getElementById('journalList');
-            list.innerHTML = '';
-
-            if (journals.length === 0) {
-                list.innerHTML = '<p class="text-xs text-slate-400 text-center py-4">Belum ada catatan jurnal tersimpan.</p>';
-                return;
-            }
-
-            journals.forEach(j => {
-                const card = document.createElement('div');
-                card.className = 'p-3 rounded-xl border border-slate-100 bg-slate-50 text-xs space-y-1.5';
-                card.innerHTML = `
-                    <div class="flex justify-between items-center text-[11px] text-slate-400">
-                        <span>📅 ${j.date}</span>
-                        <span class="bg-fuchsia-100 text-fuchsia-700 px-2 py-0.5 rounded-full font-semibold">${j.moodEmoji} ${j.moodName}</span>
-                    </div>
-                    <p class="font-bold text-slate-800">✨ Syukur: <span class="font-normal text-slate-600">${j.gratitude}</span></p>
-                    <p class="text-slate-600 bg-white p-2 rounded-lg border border-slate-100 leading-relaxed">${j.story}</p>
-                `;
-                list.appendChild(card);
-            });
-        }
-    </script>
-</body>
-</html>
+            localStorage.setItem('journal_data_' + currentActiveUser, JSON.stringify(
