@@ -19,6 +19,7 @@
 </head>
 <body class="flex flex-col items-center justify-between min-h-screen p-4 sm:p-6 text-slate-700">
 
+    <!-- Screen Login / Auth -->
     <div id="authScreen" class="w-full max-w-md my-auto flex flex-col items-center justify-center p-2">
         <div class="bg-white rounded-3xl p-6 sm:p-8 card-shadow border border-slate-100 w-full text-center space-y-4">
             <div class="w-16 h-16 bg-fuchsia-100 text-fuchsia-600 rounded-2xl flex items-center justify-center mx-auto text-2xl">
@@ -26,13 +27,13 @@
             </div>
             <div>
                 <h1 class="text-xl font-bold text-slate-800">Ruang Privasi Jurnal</h1>
-                <p class="text-xs text-slate-400 mt-1">Masukkan URL Google Sheet, username & password Anda.</p>
+                <p class="text-xs text-slate-400 mt-1">Masukkan username & password Anda.</p>
             </div>
             
             <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-3 pt-2">
-                <div>
-                    <input type="text" id="sheetUrlInput" placeholder="https://script.google.com/macros/s/AKfycbwrslZkzyHylzc1HcgZ2wi2xbl4GmpLZxAAfkW1D4hO1E5CwqWwJFdwvRIbwdvyF-C_/exec" required class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-fuchsia-500 font-medium">
-                </div>
+                <!-- URL Web App sudah tertanam otomatis dan disembunyikan -->
+                <input type="hidden" id="sheetUrlInput" value="https://script.google.com/macros/s/AKfycbwrslZkzyHylzc1HcgZ2wi2xbl4GmpLZxAAfkW1D4hO1E5CwqWwJFdwvRIbwdvyF-C_/exec">
+                
                 <div>
                     <input type="text" id="usernameInput" placeholder="Username" required class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none focus:border-fuchsia-500 text-center font-medium">
                 </div>
@@ -49,6 +50,7 @@
         </div>
     </div>
 
+    <!-- Main Dashboard -->
     <div id="mainDashboard" class="hidden w-full max-w-md flex flex-col items-center justify-between min-h-screen py-2">
         <header class="w-full text-center pt-2">
             <div class="flex justify-between items-center px-2 mb-2">
@@ -70,6 +72,7 @@
                 </button>
             </div>
 
+            <!-- View Tulis Jurnal -->
             <div id="viewWrite" class="space-y-3">
                 <div class="bg-white rounded-2xl p-4 card-shadow border border-slate-100 space-y-3.5">
                     
@@ -95,17 +98,17 @@
                         <textarea id="inputStory" rows="4" placeholder="Tulis apa saja tanpa takut dihakimi..." class="w-full text-xs bg-slate-50 border border-slate-200 rounded-xl p-2.5 outline-none focus:border-fuchsia-500 resize-none"></textarea>
                     </div>
 
-                    <button onclick="saveJournal()" class="w-full py-2.5 bg-fuchsia-600 hover:bg-fuchsia-700 text-white font-semibold rounded-xl text-xs transition cursor-pointer shadow-md shadow-fuchsia-100">
+                    <button onclick="saveJournal()" id="saveBtn" class="w-full py-2.5 bg-fuchsia-600 hover:bg-fuchsia-700 text-white font-semibold rounded-xl text-xs transition cursor-pointer shadow-md shadow-fuchsia-100">
                         Simpan Jurnal Hari Ini ✨
                     </button>
                 </div>
             </div>
 
+            <!-- View Riwayat -->
             <div id="viewHistory" class="hidden space-y-3">
                 <div class="bg-white rounded-2xl p-4 card-shadow border border-slate-100 max-h-80 overflow-y-auto space-y-2.5">
                     <h3 class="text-xs font-bold text-slate-800 mb-1">Arsip Catatan Refleksi</h3>
-                    <div id="journalList" class="space-y-2.5">
-                        </div>
+                    <div id="journalList" class="space-y-2.5"></div>
                 </div>
             </div>
 
@@ -116,6 +119,7 @@
         </footer>
     </div>
 
+    <!-- Modal Pop-up -->
     <div id="customModal" class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-2xl p-5 max-w-xs w-full card-shadow text-center space-y-3">
             <h3 id="modalTitle" class="text-sm font-bold text-slate-800">Pemberitahuan</h3>
@@ -126,15 +130,14 @@
         </div>
     </div>
 
+    <!-- Script Utama -->
     <script>
         let currentMoodEmoji = '😊';
         let currentMoodName = 'Senang';
 
         let currentActiveUser = localStorage.getItem('journal_active_user') || null;
-        let savedSheetUrl = localStorage.getItem('journal_sheet_url') || '';
         let journals = JSON.parse(localStorage.getItem('journal_data_' + currentActiveUser)) || [];
 
-        document.getElementById('sheetUrlInput').value = savedSheetUrl;
         checkAuthStatus();
 
         function showMessage(title, message) {
@@ -160,14 +163,11 @@
             submitBtn.disabled = true;
 
             try {
-                // Pengecekan login via GET ke Google Apps Script yang sudah teruji berhasil
                 const targetUrl = `${sheetUrl}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
-                
                 const response = await fetch(targetUrl);
                 const result = await response.json();
 
                 if (result.status === 'success') {
-                    localStorage.setItem('journal_sheet_url', sheetUrl);
                     localStorage.setItem('journal_active_user', username);
                     currentActiveUser = username;
                     journals = JSON.parse(localStorage.getItem('journal_data_' + username)) || [];
@@ -242,12 +242,16 @@
         async function saveJournal() {
             const gratitude = document.getElementById('inputGratitude').value.trim();
             const story = document.getElementById('inputStory').value.trim();
-            const sheetUrl = localStorage.getItem('journal_sheet_url');
+            const sheetUrl = document.getElementById('sheetUrlInput').value.trim();
 
             if (!story && !gratitude) {
                 showMessage('Perhatian', 'Mohon isi setidaknya bagian cerita atau hal yang disyukuri.');
                 return;
             }
+
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.textContent = "Menyimpan ke Sheet...";
+            saveBtn.disabled = true;
 
             const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
             const formattedDate = new Date().toLocaleDateString('id-ID', options);
@@ -261,5 +265,63 @@
                 story: story || 'Tidak diisi'
             };
 
+            // Kirim ke Google Sheet via POST
+            try {
+                await fetch(sheetUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: currentActiveUser,
+                        mood: `${currentMoodEmoji} ${currentMoodName}`,
+                        gratitude: newEntry.gratitude,
+                        story: newEntry.story
+                    })
+                });
+            } catch (err) {
+                console.error("Gagal sinkron ke sheet:", err);
+            }
+
             journals.unshift(newEntry);
-            localStorage.setItem('journal_data_' + currentActiveUser, JSON.stringify(
+            localStorage.setItem('journal_data_' + currentActiveUser, JSON.stringify(journals));
+
+            // Reset input
+            document.getElementById('inputGratitude').value = '';
+            document.getElementById('inputStory').value = '';
+
+            saveBtn.textContent = "Simpan Jurnal Hari Ini ✨";
+            saveBtn.disabled = false;
+
+            updateCountBadge();
+            showMessage('Berhasil', 'Jurnal berhasil disimpan dan disinkronkan ke Google Sheet!');
+        }
+
+        function updateCountBadge() {
+            document.getElementById('countBadge').textContent = journals.length;
+        }
+
+        function renderHistory() {
+            const listContainer = document.getElementById('journalList');
+            if (journals.length === 0) {
+                listContainer.innerHTML = '<p class="text-xs text-slate-400 text-center py-4">Belum ada arsip jurnal tersimpan.</p>';
+                return;
+            }
+
+            let html = '';
+            journals.forEach(item => {
+                html += `
+                    <div class="p-3 bg-slate-50 border border-slate-100 rounded-xl space-y-1.5 text-left">
+                        <div class="flex justify-between items-center text-[11px]">
+                            <span class="font-bold text-slate-700">${item.date}</span>
+                            <span class="bg-fuchsia-100 text-fuchsia-700 px-2 py-0.5 rounded-md font-medium">${item.moodEmoji} ${item.moodName}</span>
+                        </div>
+                        <div class="text-[11px] text-slate-600"><b>Syukur:</b> ${item.gratitude}</div>
+                        <div class="text-[11px] text-slate-500 italic">"${item.story}"</div>
+                    </div>
+                `;
+            });
+            listContainer.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
